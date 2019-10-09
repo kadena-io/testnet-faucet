@@ -1,0 +1,81 @@
+
+.login-input-container{
+    display: flex;
+    flex-direction: row;
+    height: 70px;
+    padding-bottom: 20px;
+    padding-top:20px;
+}
+
+.login-input-container input, .login-input-container div {
+    background-color: white;
+
+}
+
+.login-container{
+    padding-top: 30px;
+    padding-bottom: 60px;
+    background: rgba(255,255,255,0.7);
+    font-family: 'Roboto', sans-serif;
+    color:#7A7A7A;
+    font-size: 24px;
+    width: 50%;
+    margin: 0 auto;
+    border-radius: 5px;
+    padding-left: 120px;
+    padding-right: 120px;
+    margin-bottom: 80px;
+    position: relative;
+}
+
+.login-input-container input{
+    border-top-right-radius: 100px;
+    border-bottom-right-radius: 100px;
+    border-width: 0px;
+    flex: 1;
+    font-size: 24px;
+    color: #7A7A7A;
+    padding-left: 10px;
+}
+
+.login-input-container input::placeholder{
+    color: lightgrey;
+}
+
+.login-input-container div {
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+    width: 50px;
+    padding-top: 25px;
+    padding-left: 10px;
+}
+
+.welcome-button{
+    background-color:#B54FA3 !important;
+    color: white !important;
+}
+.welcome-button:hover{
+    background-color:#9c438c !important;
+    color: #fcedfa !important;
+}
+
+#arrow{
+  cursor: pointer;
+}
+
+#arrow:hover{
+  cursor: pointer;
+  color:#9c438c;
+}
+
+.fund-button{
+    background-color:#B54FA3 !important;
+    color: rgba(225,225,225) !important;
+}
+
+.status-button{
+    background-color: #801868 !important;
+    color: rgba(225,225,225) !important;
+    width: 240px;
+}
+

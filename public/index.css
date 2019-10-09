@@ -1,0 +1,44 @@
+@import url(App.css);
+@import url(main.css);
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+@font-face {
+  font-family: 'Neue Haas Grotesk Text Pro Roman';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Neue Haas Grotesk Text Pro Roman'), url('./fonts/NHaasGroteskTXPro-55Rg.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Neue Haas Grotesk Text Pro Italic';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Neue Haas Grotesk Text Pro Italic'), url('./fonts/NHaasGroteskTXPro-56It.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Neue Haas Grotesk Text Pro Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Neue Haas Grotesk Text Pro Bold'), url('./fonts/NHaasGroteskTXPro-75Bd.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Neue Haas Grotesk Text Pro Bold Italic';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Neue Haas Grotesk Text Pro Bold Italic'), url('./fonts/NHaasGroteskTXPro-76BdIt.woff') format('woff');
+}

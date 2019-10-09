@@ -1,0 +1,40 @@
+{
+  "name": "KadenaFaucet",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.14.0",
+    "file-loader": "^4.2.0",
+    "fingerprintjs2": "^2.1.0",
+    "pact-lang-api": "^3.0.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.0",
+    "sqlite3": "^4.1.0",
+    "url-loader": "^2.1.0"
+  },
+  "main": "main.js",
+  "scripts": {
+    "build": "webpack -w",
+    "start": "node main"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "css-loader": "^0.28.11",
+    "eslint": "^4.19.1",
+    "eslint-config-fullstack": "^5.0.0",
+    "eslint-plugin-react": "^7.8.2",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^3.1.1"
+  }
+}
