@@ -7,7 +7,7 @@ import {faucetAcct, faucetOpKP, faucetOpAcct, devnetKp} from "./../../src-acct.j
 
 const hosts = ["us1","us2","eu1","eu2","ap1","ap2"]
 const chainIds = ["0"]
-const createAPIHost = (network, chainId) => `https://${network}.tn1.chainweb.com/chainweb/0.0/development/chain/${chainId}/pact`
+const createAPIHost = (network, chainId) => `https://${network}.testnet.chainweb.com/chainweb/0.0/testnet02/chain/${chainId}/pact`
 const dumKeyPair = Pact.crypto.genKeyPair();
 const createTime = () => Math.round((new Date).getTime()/1000)-15;
 
@@ -79,7 +79,7 @@ class CallPact extends React.Component {
 
   fetchAccountBalance = (acctName, apiHost) => {
     return Pact.fetch.local({
-      networkId: "development",
+      networkId: "testnet02",
       pactCode: `(coin.get-balance ${JSON.stringify(acctName)})`,
       keyPairs: dumKeyPair,
     }, apiHost)
@@ -99,9 +99,9 @@ class CallPact extends React.Component {
     else {
       this.setState({status: "started"});
       const reqKey = await Pact.fetch.send({
-        networkId: "development",
+        networkId: "testnet02",
         pactCode:`(coin-faucet.create-and-request-coin ${JSON.stringify(this.state.accountName)} (read-keyset 'fund-keyset) 10.0)`,
-        keyPairs: [{faucetOpKP, clist: {name: "coin.GAS", args: []}}, {...devnetKp, clist: {name: "coin.TRANSFER", args: [faucetAcct, this.state.accountName, 10.0]}}],
+        keyPairs: [{...faucetOpKP, clist: {name: "coin.GAS", args: []}}, {...devnetKp, clist: {name: "coin.TRANSFER", args: [faucetAcct, this.state.accountName, 10.0]}}],
         envData: {"fund-keyset": {"pred": this.state.keysetPredicate, "keys": this.state.publicKeys}},
         meta: Pact.lang.mkMeta(faucetOpAcct,this.state.chainId,0.00000001,10000,createTime(),28800)}, createAPIHost(this.state.workingHosts[this.state.host], this.state.chainId))
       if (reqKey) {
@@ -127,7 +127,7 @@ class CallPact extends React.Component {
       else {
         this.setState({status: "started"})
         const reqKey = await Pact.fetch.send({
-          networkId: "development",
+          networkId: "testnet02",
           pactCode:`(coin-faucet.request-coin ${JSON.stringify(this.state.accountName)} 10.0)`,
           keyPairs: [{...faucetOpKP, clist: {name: "coin.GAS", args: []}}, {...devnetKp, clist: {name: "coin.TRANSFER", args: [faucetAcct, this.state.accountName, 10.0]}}],
           meta: Pact.lang.mkMeta(faucetOpAcct,this.state.chainId, 0.0000000001,10000,createTime(),28800)
@@ -354,17 +354,125 @@ class CallPact extends React.Component {
                       Back
                   </h4>
                   <h4>
-                    Download the wallet from our <a href="http://testnet.chainweb.com">homepage</a>
+                    1. Download the wallet from our <a href="http://testnet.chainweb.com">homepage</a>
                   </h4>
                   <h4>
-                    Install the .dmg file and open the app
+                    2. Install the .dmg file and open the app
                   </h4>
                   <h4>
-                    Go to the bottom of the right panel under "Accounts"
+                    3. Go to the bottom of the right panel under "Accounts"
                   </h4>
                   <h4>
-                    Select the Chain ID and a unique account name, then press "Create"
+                    4. Select the Chain ID and a unique account name, then press "Create"
                   </h4>
+                  <div>
+                  <Form.Field style={{width:"240px", margin: "0 auto", marginTop: "10px"}}>
+                    <label>Account Name
+                      <Popup
+                       trigger={
+                         <Icon name='help circle' style={{"marginLeft": "2px"}}/>
+                       }
+                       position='top center'
+                      >
+                        <Popup.Header>What is an Account Name? </Popup.Header>
+                        <Popup.Content>Account name is how you identify yourself in testnet. You'll be asked to sign with associated key/keys when you make transactions. Keep this in a safe place to play games, transfer coins, or make any other transactions!</Popup.Content>
+                      </Popup>
+                    </label>
+                    <Form.Input icon='user' iconPosition='left' placeholder='Account Name' onChange={this.onChangeAccountName} />
+                  </Form.Field>
+                  <Form.Field style={{width:"240px", margin: "0 auto", marginTop: "10px"}}>
+                   <Form.Field>
+                    <label>Public Key
+                      <Popup
+                        trigger={
+                          <Icon name='help circle' style={{"marginLeft": "2px"}}/>
+                        }
+                        position='top center'
+                        style={{width: "400px"}}
+                       >
+                        <Popup.Header>What is a Public Key?</Popup.Header>
+                         <Popup.Content>A keypair is composed of a public key and a private key. This public key will be associated your account. When you make transactions with this account, you'll need to sign with both public and private key in your Wallet. If you don't have a keypair, generate one in Kadena Wallet. </Popup.Content>
+                       </Popup>
+                     </label>
+                     <Input
+                       placeholder='Public Key'
+                       icon="key"
+                       iconPosition="left"
+                       value={this.state.publicKey}
+                       onChange={this.onChangePublicKey}
+                        action={
+                          <Button
+                          icon="add"
+                          onClick={() => this.addPublicKey()}
+                          disabled={this.state.publicKey.length !== 64 || this.state.publicKeys.indexOf(this.state.publicKey)!==-1}
+                        />}
+                      />
+                   </Form.Field>
+
+                    <List celled style={{overflowX: "auto"}}>
+                    {this.state.publicKeys.map(item => <List.Item icon='key' content={item} key={item}/>)}
+                    </List>
+                    {this.state.publicKeys.length>1?
+                      <Form.Field>
+                        <label>Keyset Predicate
+                          <Popup
+                           trigger={
+                             <Icon name='help circle' style={{"marginLeft": "2px"}}/>
+                           }
+                           position='top center'
+                           style={{width: "400px"}}
+                          >
+                           <Popup.Header>What is a Keyset Predicate?</Popup.Header>
+                            <Popup.Content>If you would like to use a multi-sig keyset, you need to choose a keyset predicate. A single-sig keyset defaults to the predicate, "keys-all".
+                             <List style={{marginTop: "0.5px"}}>
+                               <List.Item as="a">
+                                 <List.Content>
+                                   <List.Header>keys-all</List.Header>
+                                   <List.Description>all keys are required to sign the account</List.Description>
+                                 </List.Content>
+                               </List.Item>
+                               <List.Item as="a">
+                                 <List.Content>
+                                 <List.Header>keys-any</List.Header>
+                                 <List.Description>any of the keys can sign the account</List.Description>
+                                 </List.Content>
+                               </List.Item>
+                               <List.Item as="a">
+                                 <List.Content>
+                                 <List.Header>keys-2</List.Header>
+                                 <List.Description>more than 2 keys are required to sign the account</List.Description>
+                                 </List.Content>
+                               </List.Item>
+                             </List>
+                           </Popup.Content>
+                          </Popup>
+                        </label>
+                        <Dropdown
+                           selection
+                           value={this.state.keysetPredicate}
+                           onChange={this.onChangeKeysetPredicate}
+                           options={["keys-all", "keys-any", "keys-2"].map(pred => ({key: pred, text: pred, value:pred}))}
+                         />
+                       </Form.Field>
+                       :""}
+                  </Form.Field>
+
+                  <Button
+                    className="welcome-button"
+                    disabled={this.state.chainId==="" || this.state.publicKeys.length===0 || this.state.status !== "notStarted" || this.state.accountName === ""}
+                    style={{
+                      marginBottom: 10,
+                      marginTop: 30,
+                      width: "240px",
+                      }}
+                    onClick={() => {
+                      this.fundCreateAccount();
+                    }}
+                  >
+                   Create and Fund Account
+                  </Button>
+
+                  </div>
               </div>
 
              }
@@ -444,114 +552,3 @@ class CallPact extends React.Component {
 
 }
 export default CallPact;
-//
-//
-//
-//
-//
-// <Form.Field style={{width:"240px", margin: "0 auto", marginTop: "10px"}}>
-//   <label>Account Name
-//     <Popup
-//      trigger={
-//        <Icon name='help circle' style={{"marginLeft": "2px"}}/>
-//      }
-//      position='top center'
-//     >
-//       <Popup.Header>What is an Account Name? </Popup.Header>
-//       <Popup.Content>Account name is how you identify yourself in testnet. You'll be asked to sign with associated key/keys when you make transactions. Keep this in a safe place to play games, transfer coins, or make any other transactions!</Popup.Content>
-//     </Popup>
-//   </label>
-//   <Form.Input icon='user' iconPosition='left' placeholder='Account Name' onChange={this.onChangeAccountName} />
-// </Form.Field>
-// <Form.Field style={{width:"240px", margin: "0 auto", marginTop: "10px"}}>
-//  <Form.Field>
-//   <label>Public Key
-//     <Popup
-//       trigger={
-//         <Icon name='help circle' style={{"marginLeft": "2px"}}/>
-//       }
-//       position='top center'
-//       style={{width: "400px"}}
-//      >
-//       <Popup.Header>What is a Public Key?</Popup.Header>
-//        <Popup.Content>A keypair is composed of a public key and a private key. This public key will be associated your account. When you make transactions with this account, you'll need to sign with both public and private key in your Wallet. If you don't have a keypair, generate one in Kadena Wallet. </Popup.Content>
-//      </Popup>
-//    </label>
-//    <Input
-//      placeholder='Public Key'
-//      icon="key"
-//      iconPosition="left"
-//      value={this.state.publicKey}
-//      onChange={this.onChangePublicKey}
-//       action={
-//         <Button
-//         icon="add"
-//         onClick={() => this.addPublicKey()}
-//         disabled={this.state.publicKey.length !== 64 || this.state.publicKeys.indexOf(this.state.publicKey)!==-1}
-//       />}
-//     />
-//  </Form.Field>
-//
-//   <List celled style={{overflowX: "auto"}}>
-//   {this.state.publicKeys.map(item => <List.Item icon='key' content={item} key={item}/>)}
-//   </List>
-//   {this.state.publicKeys.length>1?
-//     <Form.Field>
-//       <label>Keyset Predicate
-//         <Popup
-//          trigger={
-//            <Icon name='help circle' style={{"marginLeft": "2px"}}/>
-//          }
-//          position='top center'
-//          style={{width: "400px"}}
-//         >
-//          <Popup.Header>What is a Keyset Predicate?</Popup.Header>
-//           <Popup.Content>If you would like to use a multi-sig keyset, you need to choose a keyset predicate. A single-sig keyset defaults to the predicate, "keys-all".
-//            <List style={{marginTop: "0.5px"}}>
-//              <List.Item as="a">
-//                <List.Content>
-//                  <List.Header>keys-all</List.Header>
-//                  <List.Description>all keys are required to sign the account</List.Description>
-//                </List.Content>
-//              </List.Item>
-//              <List.Item as="a">
-//                <List.Content>
-//                <List.Header>keys-any</List.Header>
-//                <List.Description>any of the keys can sign the account</List.Description>
-//                </List.Content>
-//              </List.Item>
-//              <List.Item as="a">
-//                <List.Content>
-//                <List.Header>keys-2</List.Header>
-//                <List.Description>more than 2 keys are required to sign the account</List.Description>
-//                </List.Content>
-//              </List.Item>
-//            </List>
-//          </Popup.Content>
-//         </Popup>
-//       </label>
-//       <Dropdown
-//          selection
-//          value={this.state.keysetPredicate}
-//          onChange={this.onChangeKeysetPredicate}
-//          options={["keys-all", "keys-any", "keys-2"].map(pred => ({key: pred, text: pred, value:pred}))}
-//        />
-//      </Form.Field>
-//      :""}
-// </Form.Field>
-//
-// <h4> Generate a keypair in the wallet homepage <br/> (located in the bottom of the right panel) <br/> then paste the public key above to associate<br/>the keypair with the selected account name</h4>
-// <Button
-//   className="welcome-button"
-//   disabled={this.state.chainId==="" || this.state.publicKeys.length===0 || this.state.status !== "notStarted" || this.state.accountName === ""}
-//   style={{
-//     marginBottom: 10,
-//     marginTop: 30,
-//     width: "240px",
-//     }}
-//   onClick={() => {
-//     this.fundCreateAccount();
-//   }}
-// >
-//  Create and Fund Account
-// </Button>

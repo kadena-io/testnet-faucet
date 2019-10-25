@@ -21,7 +21,7 @@ const deployFaucet = {
   },
   meta: Pact.lang.mkMeta(devnetAcct, "0", 0.000001, 100000, creationTime(), 28800),
   nonce: "Deploy Faucet and create accounts",
-  networkId: "development"
+  networkId: "testnet02"
 }
 
 //DEPLOY FAUCET CONTRACT
