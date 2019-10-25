@@ -1,16 +1,13 @@
 import React from 'react';
 import { Button, Grid, Input, Icon, Form, List, Modal, Header, Message, Popup, Dropdown } from 'semantic-ui-react';
 import axios from "axios"
-import Pact from "pact-lang-api";
+import Pact from "./../../pact-lang-api.js";
 import Fingerprint2 from "fingerprintjs2"
+import {faucetAcct, faucetOpKP, faucetOpAcct, devnetKp} from "./../../src-acct.js"
 
 const hosts = ["us1","us2","eu1","eu2","ap1","ap2"]
 const chainIds = ["0"]
-const createAPIHost = (network, chainId) => `https://${network}.testnet.chainweb.com/chainweb/0.0/testnet02/chain/${chainId}/pact`
-const faucetOpKP = {
-  publicKey: "7ecba83b579a2c9f380011e9404738478b3e3071cb2f35538215d41bc0c4d8b1",
-  secretKey: "6f1f0db20a1b47ee8255715d289aa89a84e6b5bd387f4b2f982bf4cf98dc8e29"
-}
+const createAPIHost = (network, chainId) => `https://${network}.tn1.chainweb.com/chainweb/0.0/development/chain/${chainId}/pact`
 const dumKeyPair = Pact.crypto.genKeyPair();
 const createTime = () => Math.round((new Date).getTime()/1000)-15;
 
@@ -82,7 +79,8 @@ class CallPact extends React.Component {
 
   fetchAccountBalance = (acctName, apiHost) => {
     return Pact.fetch.local({
-      pactCode: `(coin.account-balance ${JSON.stringify(acctName)})`,
+      networkId: "development",
+      pactCode: `(coin.get-balance ${JSON.stringify(acctName)})`,
       keyPairs: dumKeyPair,
     }, apiHost)
   }
@@ -101,10 +99,11 @@ class CallPact extends React.Component {
     else {
       this.setState({status: "started"});
       const reqKey = await Pact.fetch.send({
+        networkId: "development",
         pactCode:`(coin-faucet.create-and-request-coin ${JSON.stringify(this.state.accountName)} (read-keyset 'fund-keyset) 10.0)`,
-        keyPairs: faucetOpKP,
+        keyPairs: [{faucetOpKP, clist: {name: "coin.GAS", args: []}}, {...devnetKp, clist: {name: "coin.TRANSFER", args: [faucetAcct, this.state.accountName, 10.0]}}],
         envData: {"fund-keyset": {"pred": this.state.keysetPredicate, "keys": this.state.publicKeys}},
-        meta: Pact.lang.mkMeta("faucet-operation",this.state.chainId,0.00000001,10000,createTime(),28800)}, createAPIHost(this.state.workingHosts[this.state.host], this.state.chainId))
+        meta: Pact.lang.mkMeta(faucetOpAcct,this.state.chainId,0.00000001,10000,createTime(),28800)}, createAPIHost(this.state.workingHosts[this.state.host], this.state.chainId))
       if (reqKey) {
         this.saveFingerprint();
         this.fetchFingerprint();
@@ -128,9 +127,10 @@ class CallPact extends React.Component {
       else {
         this.setState({status: "started"})
         const reqKey = await Pact.fetch.send({
+          networkId: "development",
           pactCode:`(coin-faucet.request-coin ${JSON.stringify(this.state.accountName)} 10.0)`,
-          keyPairs: faucetOpKP,
-          meta: Pact.lang.mkMeta("faucet-operation",this.state.chainId, 0.0000000001,10000,createTime(),28800)
+          keyPairs: [{...faucetOpKP, clist: {name: "coin.GAS", args: []}}, {...devnetKp, clist: {name: "coin.TRANSFER", args: [faucetAcct, this.state.accountName, 10.0]}}],
+          meta: Pact.lang.mkMeta(faucetOpAcct,this.state.chainId, 0.0000000001,10000,createTime(),28800)
         }, createAPIHost(this.state.workingHosts[this.state.host], this.state.chainId))
         if (reqKey) {
           this.saveFingerprint();

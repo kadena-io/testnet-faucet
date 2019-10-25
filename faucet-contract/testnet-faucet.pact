@@ -1,3 +1,4 @@
+(namespace "user")
 (module coin-faucet GOVERNANCE
 
   "'coin-faucet' represents Kadena's Coin Faucet Contract."
@@ -10,7 +11,7 @@
   ; --------------------------------------------------------------------------
 
   (defcap GOVERNANCE ()
-    (enforce-guard (at 'guard (account-info 'contract-admins))))
+    (enforce-guard (at 'guard (details 'sender00))))
 
   ; --------------------------------------------------------------------------
   ; Schemas and Tables
@@ -79,7 +80,7 @@
     (enforce (<= amount MAX_COIN_PER_REQUEST)
       "Has reached maximum coin amount per request")
 
-      (transfer-and-create FAUCET_ACCOUNT address address-guard amount)
+      (transfer-create FAUCET_ACCOUNT address address-guard amount)
       (insert history-table address {
         "total-coins-earned": amount,
         "total-coins-returned": 0.0,
@@ -104,3 +105,4 @@
   (defun curr-time ()
     (at 'block-time (chain-data)))
 )
+(create-table history-table)
