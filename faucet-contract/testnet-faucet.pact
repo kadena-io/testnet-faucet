@@ -11,7 +11,7 @@
   ; --------------------------------------------------------------------------
 
   (defcap GOVERNANCE ()
-    (enforce-guard (at 'guard (details 'sender00))))
+    (enforce-guard (at 'guard (details 'croesus))))
 
   ; --------------------------------------------------------------------------
   ; Schemas and Tables

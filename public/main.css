@@ -50,13 +50,27 @@
     padding-left: 10px;
 }
 
+.welcome-page-button{
+  background-color:#B54FA3 !important;
+  color: white !important;
+  margin-top: 10px !important;
+  width: 200px !important;
+}
 .welcome-button{
     background-color:#B54FA3 !important;
     color: white !important;
+    margin-bottom: 10px !important;
+    margin-top: 20px !important;
+    width: 240px !important;
 }
 .welcome-button:hover{
     background-color:#9c438c !important;
     color: #fcedfa !important;
+}
+
+.instructions{
+  /* text-align: left; */
+  margin-left: 20px !important;
 }
 
 #arrow{
@@ -67,15 +81,19 @@
   cursor: pointer;
   color:#9c438c;
 }
+.fund-input {
+  width:240px !important;
+  margin: 0 auto !important;
+  margin-top: 10 !important;
+}
 
 .fund-button{
     background-color:#B54FA3 !important;
     color: rgba(225,225,225) !important;
 }
 
-.status-button{
+.status-button {
     background-color: #801868 !important;
     color: rgba(225,225,225) !important;
     width: 240px;
 }
-
