@@ -12,7 +12,7 @@ import {faucetAcct, faucetOpKP, faucetOpAcct} from "./../../src-acct.js"
 import getHost from "./getHosts.js"
 const hosts = ["us1","us2","eu1","eu2","ap1","ap2"]
 const chainIds = ["0"]
-const createAPIHost = (network, chainId) => `https://${network}.testnet.chainweb.com/chainweb/0.0/testnet02/chain/${chainId}/pact`
+const createAPIHost = (network, chainId) => `https://${network}.testnet.chainweb.com/chainweb/0.0/testnet03/chain/${chainId}/pact`
 const dumKeyPair = Pact.crypto.genKeyPair();
 const createTime = () => Math.round((new Date).getTime()/1000)-15;
 
@@ -102,7 +102,7 @@ class CallPact extends React.Component {
     else {
       this.setState({status: "started"});
       const reqKey = await Pact.fetch.send({
-        networkId: "testnet02",
+        networkId: "testnet03",
         pactCode:`(user.coin-faucet.create-and-request-coin ${JSON.stringify(this.state.accountName)} (read-keyset 'fund-keyset) 10.0)`,
         keyPairs: [{...faucetOpKP, clist: {name: "coin.GAS", args: []}}, {...Pact.crypto.genKeyPair(), clist: {name: "coin.TRANSFER", args: [faucetAcct, this.state.accountName, 10.0]}}],
         envData: {"fund-keyset": {"pred": this.state.keysetPredicate, "keys": this.state.publicKeys}},
@@ -130,7 +130,7 @@ class CallPact extends React.Component {
       else {
         this.setState({status: "started"})
         const reqKey = await Pact.fetch.send({
-          networkId: "testnet02",
+          networkId: "testnet03",
           pactCode:`(user.coin-faucet.request-coin ${JSON.stringify(this.state.accountName)} 10.0)`,
           keyPairs: [{...faucetOpKP, clist: {name: "coin.GAS", args: []}}, {...Pact.crypto.genKeyPair, clist: {name: "coin.TRANSFER", args: [faucetAcct, this.state.accountName, 10.0]}}],
           meta: Pact.lang.mkMeta(faucetOpAcct,this.state.chainId, 0.0000000001,10000,createTime(),28800)
@@ -330,4 +330,3 @@ class CallPact extends React.Component {
 
 }
 export default CallPact;
-
