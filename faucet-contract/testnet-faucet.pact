@@ -1,4 +1,3 @@
-(namespace "user")
 (module coin-faucet GOVERNANCE
 
   "'coin-faucet' represents Kadena's Coin Faucet Contract."
@@ -11,8 +10,8 @@
   ; --------------------------------------------------------------------------
 
   (defcap GOVERNANCE ()
-    (enforce-guard (at 'guard (details 'croesus))))
-
+    (enforce-guard (at 'guard (details 'contract-admins))))
+    ;true)
   ; --------------------------------------------------------------------------
   ; Schemas and Tables
   ; --------------------------------------------------------------------------
